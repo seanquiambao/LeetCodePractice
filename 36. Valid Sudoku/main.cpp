@@ -1,0 +1,203 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+template<typename A> void WRITE(A x) {
+	cout << x;
+}
+
+template<typename H, typename... T> void WRITE(const H& h, const T&... t) { 
+	WRITE(h);
+	WRITE(t...);
+}
+
+void PRINT() {
+	WRITE("\n");
+}
+
+template<typename H, typename... T> void PRINT(const H& h, const T&... t) { 
+	WRITE(h);
+	if(sizeof...(t))
+		WRITE(' ');
+	PRINT(t...);
+}
+
+template<typename T> void PRINT_ARRAY(const vector<T>& vec) {
+    for(int i = 0; i < vec.size(); ++i) {
+        if(i != 0) { cout << " "; }
+        cout << vec[i];
+    }
+    cout << "\n";
+}
+
+template <typename T> void PRINT_ARRAY(const std::vector< std::vector<T> >& vec) {
+    for(int i = 0; i < vec.size(); ++i) {
+        for(int j = 0; j < vec[0].size(); ++j) {
+            if(j != 0) { cout << " "; }
+            cout << vec[i][j];
+        }
+        cout << "\n";
+    }
+}
+
+template <typename T> T CONVERT(string& t) {
+    if(typeid(T) == typeid(int)) { return stoi(t); }
+    else if(typeid(T) == typeid(double)) { return stod(t); }
+    else if(typeid(T) == typeid(char)) { return t[0]; }
+    throw invalid_argument("Unknown datatype.");
+}
+
+
+template <typename T> void PUSH_ELEMENTS(vector<T>& arr, string& t) {
+    t = t.substr(1, t.size() - 2);
+    stringstream ss(t);
+    string argument;
+
+    while(!ss.eof()) {
+        getline(ss, argument, ',');
+        T x = CONVERT<T>(argument);
+        arr.push_back(x);
+    }
+}
+
+void PUSH_ELEMENTS(vector<string>& arr, string& t) { 
+    t = t.substr(1, t.size() - 2);
+    string argument;
+    
+
+    auto b = t.begin(), e = t.end();
+    while((b = find(b,e,'\"')) != e) {
+        ++b;
+        auto n_start = b;
+        b = find(b,e,'\"');
+        argument = string(n_start, b);
+        arr.push_back(argument);
+        ++b;
+
+    }
+}
+
+void PUSH_ELEMENTS(vector<char>& arr, string& t) { 
+    t = t.substr(1, t.size() - 2);
+    string argument;
+    
+
+    auto b = t.begin(), e = t.end();
+    while((b = find(b,e,'\"')) != e) {
+        ++b;
+        auto n_start = b;
+        b = find(b,e,'\"');
+        argument = string(n_start, b);
+        char x = CONVERT<char>(argument);
+        arr.push_back(x);
+        ++b;
+
+    }
+}
+
+template <typename T> void READ(T& x) {
+    cin >> x;
+}
+
+template <typename T> void READLINE(T& x) {
+    getline(cin, x);
+}
+
+template <typename T> void POPULATE(vector<T>& arr, string& input) {
+    if(input[0] != '[' || input[input.size() - 1] != ']') { throw invalid_argument("Must be a valid array."); }
+    PUSH_ELEMENTS(arr, input);
+    
+}
+
+
+template <typename T> void POPULATE(vector<vector<T>>& arr, string& input) {
+    if(input[0] != '[' || input[input.size() - 1] != ']') { throw invalid_argument("Must be in a valid matrix format."); }
+    input = input.substr(1,input.size() - 2);
+    string argument;
+    vector<T> temp;
+
+    auto b = input.begin(), e = input.end();
+    while((b = find(b,e,'[')) != e) {
+        temp.clear();
+        auto n_start = b;
+        b = find(b,e,']');
+        argument = string(n_start, ++b);
+        PUSH_ELEMENTS(temp, argument);
+        arr.push_back(temp);
+        ++b;
+
+    }
+}
+
+typedef vector<vector<pair<int,int>>> hashmap;
+class Solution {
+public:
+    bool fourDirectionalRule(int i, int j, int k, int l) {
+        return (i != k) && (j != l);
+    }
+
+    bool threeSquareRule(int i, int j, int k, int l) {
+        return !((i == k) && (j == l));
+    }
+    
+    bool doesSatisfyRules(hashmap& hash, int digit, int i, int j) {
+        if(!hash[digit].empty()) { 
+            for(int x = 0; x < hash[digit].size(); ++x) {
+                int k = hash[digit][x].first;
+                int l = hash[digit][x].second;
+                if(!fourDirectionalRule(i,j,k,l) || !threeSquareRule(i/3,j/3,k/3,l/3)) { return false; }
+            }
+            
+        }
+
+        hash[digit].push_back({i,j});
+        return true;
+        
+    }
+    bool isValidSudoku(vector<vector<char>>& board) {
+        hashmap hash(10);
+
+        int row = board.size(), col = board[0].size();
+        bool ok = true;
+
+        for(int i = 0; i < row; ++i) {
+            for(int j = 0; j < col; ++j) {
+                if(isdigit(board[i][j])) { 
+                    int num = board[i][j] - '0';
+                    ok = doesSatisfyRules(hash, num, i, j); 
+                }
+                if(!ok) { return false; }
+            }
+        }
+
+        return true;
+
+    }
+};
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+
+    Solution sol;
+    int cases;
+    string input;
+
+    READ(cases);
+    vector<vector<char>> matrix;
+    
+    cin.ignore();
+
+    for(int i = 0; i < cases; ++i) {
+        matrix.clear();
+        READLINE(input);
+        POPULATE(matrix, input);
+        WRITE("Case #", i+1, ": ");
+        PRINT(sol.isValidSudoku(matrix));
+        // Collect inputs in this for loop.
+        // PRINT(sol.functionName(...inputs));
+    }
+
+    
+
+    return 0;
+}
