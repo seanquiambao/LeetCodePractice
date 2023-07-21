@@ -1,0 +1,3 @@
+[submodule "CPPLeetCodeTemplate"]
+	path = CPPLeetCodeTemplate
+	url = https://github.com/seanquiambao/CPPLeetCodeTemplate.git
