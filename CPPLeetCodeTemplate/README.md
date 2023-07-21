@@ -1,0 +1,1 @@
+A C++ template for LeetCode because I hate rewriting LeetCode's input.
