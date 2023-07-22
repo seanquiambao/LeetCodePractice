@@ -1,0 +1,10 @@
+Use this scratchpad as a way to copy and paste your inputs.
+When copying the inputs into the terminal, follow the format below.
+(For example, let A and B be inputs to a problem.)
+
+Input:
+
+2
+[10,15,20]
+[1,100,1,1,1,100,1,1,100,1]
+
