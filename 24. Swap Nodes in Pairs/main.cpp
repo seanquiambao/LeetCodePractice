@@ -1,7 +1,7 @@
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
 
 using namespace std;
+
 struct ListNode {
     int val;
     ListNode *next;
@@ -10,42 +10,53 @@ struct ListNode {
     ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
-class Solution {
-public:
-    ListNode* swapPairs(ListNode* head) {
-        if(!head || !head->next) return head;
-        ListNode* prev = head;
-        ListNode* curr = head->next;
-        ListNode* temp = nullptr;
-        while(true) {
-            temp = prev;
-            prev->next = curr->next;
-            curr->next = temp;
-            if(prev == head) head = curr;
-
-            prev = prev->next; 
-            if(prev == nullptr) break;
-            curr = prev->next;
-        }
-
-        return head;
-    }
-};
-
-
-int main() {
-
-    Solution sol;
-    vector<int> arr = {1,2,3,4};
+ListNode* createList(vector<int> arr) { 
     ListNode* head = new ListNode(arr[0]);
     ListNode* curr = head;
-
-    for(int i = 1; i < arr.size(); ++i) {
+    for(int i = 1; i < arr.size(); ++i) { 
         curr->next = new ListNode(arr[i]);
         curr = curr->next;
     }
 
-    sol.swapPairs(head);
+
+    return head;
+}
+
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        if(!head || !head->next) { return head; }
+        ListNode* prev = nullptr;
+        ListNode* curr = head;
+        ListNode* nextPtr = head;
+        head = curr->next;
+
+        while(curr && curr->next) {
+            nextPtr = curr->next;
+            curr->next = nextPtr->next;
+            nextPtr->next = curr;
+            if(prev) { prev->next = nextPtr; }
+            curr = curr->next;
+            prev = nextPtr;
+        }
+        return head;
+    }
+};
+
+int main() {
+
+
+    ListNode* list = createList({1,2,3,4});
+    Solution sol;
+    ListNode* ans = sol.swapPairs(list);
+
+    while(ans) { 
+        cout << ans->val << " ";
+        ans = ans->next;
+    }
+    
+    
+
 
     return 0;
 }
